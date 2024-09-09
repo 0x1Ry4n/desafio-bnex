@@ -1,0 +1,104 @@
+services:
+  db-server:
+    image: postgres:15-alpine
+    container_name: db-server
+    networks:
+      - app-network
+    ports:
+      - "${POSTGRES_LOCAL_PORT}:${POSTGRES_DOCKER_PORT}"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DATABASE}"]
+      interval: "10s"
+      timeout: "5s"
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: "512MB"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    ports:
+      - ${PGADMIN_LOCAL_PORT}:${PGADMIN_DOCKER_PORT}
+    environment: 
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      db-server:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+      args:
+        DJANGO_SU_NAME: ${DJANGO_SUPERUSER_USERNAME}
+        DJANGO_SU_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
+        DJANGO_SU_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
+        DJANGO_DB_NAME: ${POSTGRES_DATABASE}
+        API_LOCAL_PORT: ${API_LOCAL_PORT}
+    container_name: api-server
+    networks:
+      - app-network
+    ports:
+      - "${API_LOCAL_PORT}:${API_DOCKER_PORT}"
+    volumes:
+      - ./api:/api
+    environment:
+      DJANGO_SETTINGS_MODULE: project.settings
+      DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+      DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
+      DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
+      DB_NAME: ${POSTGRES_DATABASE}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_HOST: db-server
+    depends_on:
+      db-server:
+        condition: service_healthy
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: "1G"
+
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: app-server
+    networks:
+      - app-network
+    ports:
+      - "${APP_LOCAL_PORT}:${APP_DOCKER_PORT}"
+    volumes:
+      - ./app:/app
+      - node_modules:/app/node_modules
+    depends_on:
+      - "api"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: "512MB"
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data:
+  node_modules:
