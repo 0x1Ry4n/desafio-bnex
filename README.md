@@ -33,8 +33,9 @@ Para configurar e executar o projeto, siga os passos abaixo:
 1. **Clone o Repositório:**
 
    ```bash
-   git clone https://github.com/0x1Ry4n/desafio-bnex.git
-   cd desafio-bnex
+      git clone https://github.com/0x1Ry4n/desafio-bnex.git
+      cd desafio-bnex
+   ```
 
 2. **Crie e Inicie os Contêineres:**
     O arquivo `docker-compose.yml` define três serviços:
@@ -45,17 +46,17 @@ Para configurar e executar o projeto, siga os passos abaixo:
     - Utilize este comando criará e iniciará os contêineres para o backend, frontend e banco de dados:
 
     ```bash
-    docker-compose up --build
+       docker-compose up --build
     ```
 
 3. **Acesse o Backend:**
     - A API estará disponível na porta `API_LOCAL_PORT` definida no arquivo .env: 
     ```bash
-    http://localhost:(port)/v1/api/
-    
+       http://localhost:(port)/v1/api/
+    ```
 4. **Acesso o Frontend:**
-  - O frontend estará disponível na porta `APP_LOCAL_PORT` definida no arquivo .env: 
+    - O frontend estará disponível na porta `APP_LOCAL_PORT` definida no arquivo .env: 
     ```bash
-    http://localhost:(port)/ 
+       http://localhost:(port)/ 
     ```
 
