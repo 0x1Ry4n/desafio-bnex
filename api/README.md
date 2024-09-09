@@ -54,13 +54,13 @@ A documentação da API é gerada usando a biblioteca `drf-yasg`. O esquema Swag
    Certifique-se de que todas as dependências estão instaladas. Você pode usar um ambiente virtual e o `pip` para instalar as dependências listadas no arquivo `requirements.txt`:
 
    ```bash
-   pip install -r requirements.txt
+      pip install -r requirements.txt
    ```
 
    Também instale as dependências de desenvolvedor listadas no arquivo 'requirements-dev.txt':
 
    ```bash
-   pip install -r requirements-dev.txt
+      pip install -r requirements-dev.txt
    ```
 
 
@@ -69,17 +69,17 @@ A documentação da API é gerada usando a biblioteca `drf-yasg`. O esquema Swag
    Certifique-se de que o banco de dados está configurado corretamente e as migrações estão aplicadas:
 
    ```bash
-   python manage.py makemigrations
+      python manage.py makemigrations
    ```
 
    ```bash
-   python manage.py migrate
+      python manage.py migrate
    ```
 
 3. **Inicie o Servidor de Desenvolvimento**
 
    ```bash
-   python manage.py runserver
+      python manage.py runserver
    ```
 
    O servidor estará disponível em http://localhost:8000/.
