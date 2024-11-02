@@ -39,7 +39,7 @@ const Register: React.FC = () => {
     message: '',
   });
 
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
 
   const validationSchema = Yup.object().shape({
@@ -67,29 +67,46 @@ const Register: React.FC = () => {
   const handleRegister = (formData: FormData) => {
     const { username, email, password } = formData;
 
-    setState((prevState) => ({
-      ...prevState,
+    setState({
       message: '',
       successful: false,
-    }));
+    });
 
     AuthService.register(username, email, password)
       .then((response) => {
-        if (response.id) {
-          setState({
-            message: 'User registered successfully!',
-            successful: true,
-          });
-        }
+          if (response.id) {
+            setState({
+              message: 'User registered successfully!',
+              successful: true,
+            });
+            setOpen(true); 
+          }
       })
       .catch((error) => {
-        const resMessage =
-          error?.message || 'An unexpected error occurred';
-
+        let resMessage = '';
+      
+        // Verifica se o erro tem uma resposta da API
+        if (error.response && error.response.data) {
+          const data = error.response.data;
+          if (data.username) {
+            resMessage = data.username[0];
+          } else if (data.email) {
+            resMessage = data.email[0];
+          } else if (data.password) {
+            resMessage = data.password[0];
+          } else {
+            resMessage = data.message || 'An error occurred during registration.';
+          }
+        } else {
+          // Caso o erro não seja de resposta da API
+          resMessage = error.message || 'An error occurred during registration.';
+        }
+      
         setState({
           successful: false,
           message: resMessage,
         });
+        setOpen(true); // Abre o modal para mostrar o erro
       });
   };
 
@@ -223,9 +240,7 @@ const Register: React.FC = () => {
                           aria-label="close"
                           color="inherit"
                           size="small"
-                          onClick={() => {
-                            setOpen(false);
-                          }}
+                          onClick={handleClose}
                         >
                           <CloseIcon fontSize="inherit" />
                         </IconButton>
@@ -241,9 +256,7 @@ const Register: React.FC = () => {
                           aria-label="close"
                           color="inherit"
                           size="small"
-                          onClick={() => {
-                            setOpen(false);
-                          }}
+                          onClick={handleClose}
                         >
                           <CloseIcon fontSize="inherit" />
                         </IconButton>

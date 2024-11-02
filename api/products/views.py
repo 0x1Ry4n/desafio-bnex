@@ -6,6 +6,8 @@ from .permissions import IsOwner
 
 from products import models, serializers
 
+# Services definition (Request handler)
+
 class ProductPagination(PageNumberPagination):
     page_size = 10  
     page_size_query_param = 'page_size'

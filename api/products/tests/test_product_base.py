@@ -3,6 +3,8 @@ from django.test import TestCase
 from faker import Faker
 from products.models import Products
 
+# Unit test base case
+
 class ProductTestBase(TestCase):
     def setUp(self) -> None:
         super().setUp()

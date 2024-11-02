@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings 
 from uuid import uuid4
 
+# Products table definition (model)
+
 class Products(models.Model):
     """
         Define the Products Model.

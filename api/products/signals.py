@@ -3,6 +3,9 @@ from django.dispatch import receiver
 from products.models import Products
 import logging
 
+
+# Execute after a save or delete event
+
 logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=Products)

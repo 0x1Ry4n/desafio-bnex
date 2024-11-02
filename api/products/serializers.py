@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from products import models
 
+# Converts python object to JSON
+
 class ProductSerializer(serializers.ModelSerializer):
     """
         Serializes Products Model
